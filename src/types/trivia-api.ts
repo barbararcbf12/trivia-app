@@ -1,3 +1,8 @@
+export type ApiDataProps = {
+  response_code: number;
+  results: QuestionDataProps[];
+}
+
 export type QuestionDataProps = {
   type: string;
   difficulty: string;

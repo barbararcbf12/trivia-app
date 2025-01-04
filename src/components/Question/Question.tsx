@@ -1,5 +1,5 @@
 import React from "react";
-import { QuestionDataProps } from "../../types/question";
+import { QuestionDataProps } from "../../types/trivia-api";
 
 type QuestionProps = QuestionDataProps & { questionId: string };
 
