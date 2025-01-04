@@ -21,8 +21,12 @@ function Question( props : QuestionProps ) {
 
   const isQuestionBoolean = type === "boolean";
 
-  //Merge correct and incorrect options into one array and shuffle it
-  const options = useMemo(() => [correct_answer, ...incorrect_answers].sort(() => Math.random() - 0.5), [correct_answer, incorrect_answers]);
+  //If type is not boolean, correct and incorrect options are merged into one array and shuffle it
+  //otherwise, the options are fixed to 'True' and 'False' in this order
+  const options = useMemo(() =>
+    isQuestionBoolean ? ['True', 'False'] : [correct_answer, ...incorrect_answers].sort(() => Math.random() - 0.5),
+    [correct_answer, incorrect_answers]
+  );
   const showError = isFormSubmitted && selectedAnswer?.isCorrect === false;
 
   const handleSelection = (selectedOption: string) => {
