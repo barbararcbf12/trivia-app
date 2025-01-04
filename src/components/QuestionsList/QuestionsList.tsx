@@ -1,8 +1,12 @@
 import React from "react";
 import Question from "../Question/Question";
-import { questions } from "../../api/mockData";
+import { QuestionDataProps } from "../../types/question";
 
-function QuestionsList() {
+type QuestionsListProps = {
+  questions: QuestionDataProps[];
+}
+
+function QuestionsList({ questions } : QuestionsListProps ) {
   const isSubmitted = true;
 
   return (
