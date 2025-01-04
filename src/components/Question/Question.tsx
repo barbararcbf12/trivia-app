@@ -15,7 +15,7 @@ function Question( props : QuestionProps ) {
       <fieldset id={ questionId }>
         <ul className={ `flex ${ isBoolean ? "gap-4" : "flex-col gap-2" }` }>
           {options.map((option, index) =>
-            <li className="flex">
+            <li className="flex" key={`${questionId}-option-${index}`}>
               <label className="flex gap-2 items-center">
                 <input
                   type="radio"
