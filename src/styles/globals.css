@@ -1,10 +1,11 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import './loader.css';
 
 @layer base {
   body {
-    @apply bg-mono-100 font-sans dark:bg-black;
+    @apply font-sans dark:bg-black h-screen bg-mono-100;
   }
 
   html {
