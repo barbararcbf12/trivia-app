@@ -1,4 +1,4 @@
-# Git repository for my "react-boilerplate-app"
+# Git repository for my "Trivia App"
 
 This is my boilerplate project, bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
