@@ -1,6 +1,1 @@
-export function isAnswerCorrect(selectedAnswer: string, correct_answer: string) {
-  if (selectedAnswer === correct_answer) {
-    return true;
-  }
-  return false;
-}
+export const isAnswerCorrect = (selectedAnswer: string, correct_answer: string) => selectedAnswer === correct_answer;
