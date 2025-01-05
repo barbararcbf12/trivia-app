@@ -5,6 +5,7 @@ import { useQuestions } from "../../context/QuestionsContext";
 
 function QuestionsList() {
   const {
+    exceedRequestsNr,
     questions,
     isLoading,
     isFetching,
@@ -27,9 +28,12 @@ function QuestionsList() {
 
   return (
     <section className="flex flex-col gap-4 items-center w-1/2">
-      { isLoading || isFetching ? <span className="loader"></span> : null }
+      { isLoading || isFetching ? <span className="loader"></span>
+        : exceedRequestsNr ? <span>Too many requests have occurred. Wait 5 seconds and try again.</span>
+          : null
+      }
       { error ? <span>{ `An error has occurred: ${ error.message }` }</span> : null }
-      { !isLoading && !error && !isFetching && isSuccess ?
+      { !isLoading && !error && !isFetching && !exceedRequestsNr && isSuccess ?
         <>
           <form
             onSubmit={ onHandleSubmit }

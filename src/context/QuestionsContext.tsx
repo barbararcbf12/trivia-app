@@ -5,6 +5,7 @@ import type { ApiDataProps } from "../types/trivia-api";
 import type { AnswerProps } from "../types/answer";
 
 type ContextType = {
+  exceedRequestsNr: boolean,
   questions: ApiDataProps['results'],
   isLoading: boolean,
   isFetching: boolean,
@@ -19,6 +20,7 @@ type ContextType = {
 }
 
 const initialContext: ContextType = {
+  exceedRequestsNr: false,
   questions: [],
   isLoading: false,
   isFetching: false,
@@ -45,6 +47,8 @@ function QuestionsContextProvider({ children }: { children: any } ) {
   });
 
   const value = {
+    // 5 is the code for rate limit according to the API docs https://opentdb.com/api_config.php
+    exceedRequestsNr: data?.response_code === 5,
     questions: data?.results || [],
     isLoading,
     isFetching,
