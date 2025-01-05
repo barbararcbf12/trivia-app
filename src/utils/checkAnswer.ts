@@ -1,0 +1,1 @@
+export const isAnswerCorrect = (selectedAnswer: string, correct_answer: string) => selectedAnswer === correct_answer;

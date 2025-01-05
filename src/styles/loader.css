@@ -1,0 +1,18 @@
+@import "tailwindcss/components";
+
+@layer components {
+  .loader {
+    @apply w-12 h-12 border-8 border-solid border-grey-200 border-opacity-50 rounded-full animate-spin;
+    @apply border-b-grey-700 inline-block box-border;
+    @apply animate-[rotation_1s_linear_infinite];
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

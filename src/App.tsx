@@ -1,13 +1,20 @@
 import React from "react";
 import Header from "./components/Header/Header";
+import QuestionsList from "./components/QuestionsList/QuestionsList";
+import { ReactQueryProvider } from "./api/react-query-provider";
+import { QuestionsContextProvider } from "./context/QuestionsContext";
 
 function App() {
   return (
-    <div className="space-y-3 h-screen flex flex-col items-center">
-      <Header />
-      <main className="p-3 w-1/2 flex justify-center">
-        Main content
-      </main>
+    <div className="w-full h-full flex flex-col items-center">
+      <ReactQueryProvider>
+        <QuestionsContextProvider>
+          <Header />
+          <main className="w-full h-full flex flex-grow justify-center p-3 bg-mono-100">
+            <QuestionsList />
+          </main>
+        </QuestionsContextProvider>
+      </ReactQueryProvider>
     </div>
   );
 }
