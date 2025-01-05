@@ -1,6 +1,24 @@
-# Git repository for my "Trivia App"
+# Trivia App
 
-This is my boilerplate project, bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![img_2.png](img_2.png)
+
+## Project requirements:
+1. Set up a React TypeScript project - you may use Create React App: https://create-react-app.dev/docs/getting-started
+2. Use the trivia API: https://opentdb.com/api.php?amount=10&category=17
+3. Use a query library, such as TanStack Query to fetch API data: https://tanstack.com/query/latest/docs/framework/react/installation
+4. Use the attached wireframes as a reference for how questions should be presented.
+5. Styling is optional and may differ entirely from what the wireframe looks like.
+6. Optionally, use any additional libraries you prefer.
+
+## Wireframes:
+![img.png](img.png)
+![img_1.png](img_1.png)
+
+## Implementation notes:
+1. When displaying the possible answers for each question of type "multiple", the correct answer is randomly placed among the incorrect answers.
+2. For questions of type "boolean", the possible answers are always "Correct" and "Incorrect" in this order.
+3. The submit button is disabled until the user selects an answer for all questions.
+4. The api has a rate limit of 5 seconds between request (https://opentdb.com/api_config.php), so if the user tries to refetch questions in an interval lower than 5 seconds, a message will be displayed.
 
 ## Tech stack
 
