@@ -9,6 +9,7 @@
 4. Use the attached wireframes as a reference for how questions should be presented.
 5. Styling is optional and may differ entirely from what the wireframe looks like.
 6. Optionally, use any additional libraries you prefer.
+7. We do not expect you to spend more than 2 hours on the task. Don't worry too much about making it look pretty - we care more about how you think. If you can't finish everything, that's okay! Just think about how you would complete it, and we'll discuss your ideas during the interview.
 
 ## Wireframes:
 ![img.png](img.png)
