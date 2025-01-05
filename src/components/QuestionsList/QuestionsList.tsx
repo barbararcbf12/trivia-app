@@ -27,7 +27,7 @@ function QuestionsList() {
   const isFormFilled = answers.length === questions.length;
 
   return (
-    <section className="flex flex-col gap-4 items-center w-1/2">
+    <section className="flex flex-col gap-4 items-center w-full lg:w-1/2">
       { isLoading || isFetching ? <span className="loader"></span>
         : exceedRequestsNr ? <span>Too many requests have occurred. Wait 5 seconds and try again.</span>
           : null
