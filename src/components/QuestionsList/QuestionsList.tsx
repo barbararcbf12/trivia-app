@@ -1,4 +1,4 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, useMemo } from "react";
 import Question from "../Question/Question";
 import Button from "../Button/Button";
 import { useQuestions } from "../../context/QuestionsContext";
@@ -10,7 +10,6 @@ function QuestionsList() {
     isLoading,
     isFetching,
     error,
-    isSuccess,
     isFormSubmitted,
     setIsFormSubmitted,
     answers,
@@ -21,35 +20,31 @@ function QuestionsList() {
     setIsFormSubmitted(true);
   }
 
-  const countCorrectAnswers = answers.filter(answer => answer.isCorrect).length;
+  const countCorrectAnswers = useMemo(() => answers.filter(answer => answer.isCorrect).length, [answers]);
   const isFormFilled = answers.length === questions.length;
+  const errorMessage = error?.message || "Something went wrong. Please try again.";
+
+  if (isLoading || isFetching) return <span className="loader"></span>;
+  if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
+  if (error) return <span>{`An error has occurred: ${errorMessage}`}</span>;
 
   return (
-    <section className="flex flex-col gap-4 items-center w-full lg:w-1/2">
-      { isLoading || isFetching ? <span className="loader"></span>
-        : exceedRequestsNr ? <span>Too many requests have occurred. Wait 5 seconds and try again.</span>
-          : null
-      }
-      { error ? <span>{ `An error has occurred: ${ error.message }` }</span> : null }
-      { !isLoading && !error && !isFetching && !exceedRequestsNr && isSuccess ?
-        <>
-          <form
-            onSubmit={ onHandleSubmit }
-            className="w-full flex flex-col space-y-4"
-          >
-            { questions?.map((question, index) =>
-              <Question
-                key={ question.question }
-                questionId={ `question-${ index + 1 }` }
-                { ...question }
-              />
-            ) }
-            <Button disabled={ !isFormFilled }>Submit</Button>
-          </form>
-          <span className="text-red-600 pb-6 mb-6">{ isFormSubmitted ? `${ countCorrectAnswers } / 10 correct` : ''}</span>
-        </>
-      : null }
-    </section>
+    <>
+      <form
+        onSubmit={ onHandleSubmit }
+        className="w-full flex flex-col space-y-4"
+      >
+        { questions?.map((question, index) =>
+          <Question
+            key={ question.question }
+            questionId={ `question-${ index + 1 }` }
+            { ...question }
+          />
+        ) }
+        <Button disabled={ !isFormFilled }>Submit</Button>
+      </form>
+      <span className="text-red-600 pb-6 mb-6">{ isFormSubmitted ? `${ countCorrectAnswers } / 10 correct` : ''}</span>
+    </>
   );
 }
 
