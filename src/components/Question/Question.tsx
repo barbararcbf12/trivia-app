@@ -3,6 +3,7 @@ import type { QuestionDataProps } from "../../types/trivia-api";
 import type { AnswerProps } from "../../types/answer";
 import { isAnswerCorrect } from "../../utils/checkAnswer";
 import { useQuestions } from "../../context/QuestionsContext";
+import { shuffleOptions } from "../../utils/shuffleOptions";
 
 type QuestionProps = QuestionDataProps & {
   questionId: string,
@@ -10,7 +11,7 @@ type QuestionProps = QuestionDataProps & {
 
 function Question( props : QuestionProps ) {
   const [ selectedAnswer, setSelectedAnswer ] = useState<AnswerProps>();
-  const { isFormSubmitted, answers, setAnswers } = useQuestions();
+  const { isFormSubmitted, setAnswers } = useQuestions();
   const {
     type,
     question,
@@ -24,25 +25,27 @@ function Question( props : QuestionProps ) {
   //If type is not boolean, correct and incorrect options are merged into one array and shuffle it
   //otherwise, the options are fixed to 'True' and 'False' in this order
   const options = useMemo(() =>
-    isQuestionBoolean ? ['Correct', 'Incorrect'] : [correct_answer, ...incorrect_answers].sort(() => Math.random() - 0.5),
+    isQuestionBoolean ? ['Correct', 'Incorrect'] : shuffleOptions([correct_answer, ...incorrect_answers]),
     [correct_answer, incorrect_answers, isQuestionBoolean]
   );
-  const showError = isFormSubmitted && selectedAnswer?.isCorrect === false;
+  const showError = useMemo(() => isFormSubmitted && selectedAnswer?.isCorrect === false, [isFormSubmitted, selectedAnswer]);
 
   const handleSelection = (selectedOption: string) => {
     //Compose the selected answer object
-    const selectedAnswer = { questionId, answer: selectedOption, isCorrect: isAnswerCorrect(selectedOption, correct_answer) };
-    setSelectedAnswer(selectedAnswer);
-    //Remove the previous answer for the same question
-    const filteredAnswers = answers?.filter(answer => answer.questionId !== questionId) || [];
-    //Update the answers array with the selected answer
-    setAnswers([...filteredAnswers, selectedAnswer]);
+    const newAnswer = {
+      questionId,
+      answer: selectedOption,
+      isCorrect: isAnswerCorrect(selectedOption, correct_answer)
+    };
+    setSelectedAnswer(newAnswer);
+    //Remove the previous answer for the same question & Update it the answers array with the new answer
+    setAnswers(prevState => [...prevState.filter(answer => answer.questionId !== questionId), newAnswer]);
   }
 
   return (
     <div className="flex flex-col gap-4 rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full">
-      <h2>{ question }</h2>
       <fieldset id={ questionId }>
+        <legend>{ question }</legend>
         <ul className={ `flex ${ isQuestionBoolean ? "gap-4" : "flex-col gap-2" }` }>
           {options.map((option, index) => {
             const isIncorrect = !isAnswerCorrect(option, correct_answer) && selectedAnswer?.answer === option;
