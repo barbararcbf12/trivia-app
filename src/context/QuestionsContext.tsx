@@ -1,8 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getQuestions } from "../api/getQuestions";
 import type { ApiDataProps } from "../types/trivia-api";
 import type { AnswerProps } from "../types/answer";
+import { hasExceededRequestLimit } from "../utils/hasExceededRequestLimit";
 
 type ContextType = {
   exceedRequestsNr: boolean,
@@ -10,12 +11,11 @@ type ContextType = {
   isLoading: boolean,
   isFetching: boolean,
   error: any,
-  isSuccess: boolean,
   refetch: () => void,
   isFormSubmitted: boolean,
   setIsFormSubmitted: (option: boolean) => void,
   answers: AnswerProps[],
-  setAnswers: (answers: AnswerProps[]) => void,
+  setAnswers: Dispatch<SetStateAction<AnswerProps[]>>
 }
 
 const initialContext: ContextType = {
@@ -24,7 +24,6 @@ const initialContext: ContextType = {
   isLoading: false,
   isFetching: false,
   error: null,
-  isSuccess: false,
   refetch: () => {},
   isFormSubmitted: false,
   setIsFormSubmitted: () => {},
@@ -34,22 +33,20 @@ const initialContext: ContextType = {
 
 const QuestionsContext = createContext(initialContext);
 
-function QuestionsContextProvider({ children }: { children: any } ) {
+function QuestionsContextProvider({ children }: { children: ReactNode } ) {
   const [ answers, setAnswers ] = useState<AnswerProps[]>([]);
   const [ isFormSubmitted, setIsFormSubmitted ] = useState<boolean>(false);
-  const { isLoading, isFetching, error, data, isSuccess, refetch } = useQuery<ApiDataProps>({
+  const { isLoading, isFetching, error, data, refetch } = useQuery<ApiDataProps>({
     queryKey: ['triviaData'],
     queryFn: getQuestions,
   });
 
   const value = {
-    // 5 is the code for rate limit according to the API docs https://opentdb.com/api_config.php
-    exceedRequestsNr: data?.response_code === 5,
+    exceedRequestsNr: hasExceededRequestLimit(data?.response_code),
     questions: data?.results || [],
     isLoading,
     isFetching,
     error,
-    isSuccess,
     refetch,
     isFormSubmitted,
     setIsFormSubmitted,
