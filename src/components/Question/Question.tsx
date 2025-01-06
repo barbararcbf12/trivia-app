@@ -43,8 +43,8 @@ function Question( props : QuestionProps ) {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full">
-      <fieldset id={ questionId }>
+    <div className="flex rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full">
+      <fieldset id={ questionId } className="flex space-y-4">
         <legend>{ question }</legend>
         <ul className={ `flex ${ isQuestionBoolean ? "gap-4" : "flex-col gap-2" }` }>
           {options.map((option, index) => {
