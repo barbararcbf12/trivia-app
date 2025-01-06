@@ -12,7 +12,6 @@ type ContextType = {
   error: any,
   isSuccess: boolean,
   refetch: () => void,
-  setEnabled: (enabled: boolean) => void,
   isFormSubmitted: boolean,
   setIsFormSubmitted: (option: boolean) => void,
   answers: AnswerProps[],
@@ -27,7 +26,6 @@ const initialContext: ContextType = {
   error: null,
   isSuccess: false,
   refetch: () => {},
-  setEnabled: () => {},
   isFormSubmitted: false,
   setIsFormSubmitted: () => {},
   answers: [],
@@ -39,11 +37,9 @@ const QuestionsContext = createContext(initialContext);
 function QuestionsContextProvider({ children }: { children: any } ) {
   const [ answers, setAnswers ] = useState<AnswerProps[]>([]);
   const [ isFormSubmitted, setIsFormSubmitted ] = useState<boolean>(false);
-  const [ enabled, setEnabled ] = useState<boolean>(true);
   const { isLoading, isFetching, error, data, isSuccess, refetch } = useQuery<ApiDataProps>({
     queryKey: ['triviaData'],
     queryFn: getQuestions,
-    enabled: enabled,
   });
 
   const value = {
@@ -55,7 +51,6 @@ function QuestionsContextProvider({ children }: { children: any } ) {
     error,
     isSuccess,
     refetch,
-    setEnabled,
     isFormSubmitted,
     setIsFormSubmitted,
     answers,

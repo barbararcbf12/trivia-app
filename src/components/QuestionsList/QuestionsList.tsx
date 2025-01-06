@@ -11,7 +11,6 @@ function QuestionsList() {
     isFetching,
     error,
     isSuccess,
-    setEnabled,
     isFormSubmitted,
     setIsFormSubmitted,
     answers,
@@ -20,7 +19,6 @@ function QuestionsList() {
   function onHandleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsFormSubmitted(true);
-    setEnabled(false);
   }
 
   const countCorrectAnswers = answers.filter(answer => answer.isCorrect).length;
