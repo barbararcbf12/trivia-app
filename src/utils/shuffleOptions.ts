@@ -1,0 +1,1 @@
+export const shuffleOptions = (options: string[]) => options.sort(() => Math.random() - 0.5);
