@@ -11,7 +11,9 @@ function App() {
         <QuestionsContextProvider>
           <Header />
           <main className="w-full h-full flex flex-grow justify-center p-3 bg-mono-100">
-            <QuestionsList />
+            <section className="flex flex-col gap-4 items-center w-full lg:w-1/2">
+              <QuestionsList/>
+            </section>
           </main>
         </QuestionsContextProvider>
       </ReactQueryProvider>
