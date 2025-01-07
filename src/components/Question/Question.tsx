@@ -1,32 +1,23 @@
 import React, { useMemo, useState } from "react";
-import type { QuestionDataProps } from "../../types/trivia-api";
+import type { QuestionDataProps } from "../../types/triviaApi";
 import type { AnswerProps } from "../../types/answer";
 import { isAnswerCorrect } from "../../utils/checkAnswer";
-import { useQuestions } from "../../context/QuestionsContext";
-import { shuffleOptions } from "../../utils/shuffleOptions";
+import { getOptions } from "../../utils/getOptions";
 
 type QuestionProps = QuestionDataProps & {
   questionId: string,
+  setAnswers: (value: React.SetStateAction<AnswerProps[]>) => void,
+  isFormSubmitted: boolean
 };
 
 function Question( props : QuestionProps ) {
   const [ selectedAnswer, setSelectedAnswer ] = useState<AnswerProps>();
-  const { isFormSubmitted, setAnswers } = useQuestions();
-  const {
-    type,
-    question,
-    correct_answer,
-    incorrect_answers,
-    questionId,
-  } = props;
+  const { type, question, correct_answer, incorrect_answers, questionId, isFormSubmitted, setAnswers } = props;
 
-  const isQuestionBoolean = type === "boolean";
+  const isQuestionBoolean = useMemo( () => type === "boolean", [type]);
 
-  //If type is not boolean, correct and incorrect options are merged into one array and shuffle it
-  //otherwise, the options are fixed to 'True' and 'False' in this order
-  const options = useMemo(() =>
-    isQuestionBoolean ? ['Correct', 'Incorrect'] : shuffleOptions([correct_answer, ...incorrect_answers]),
-    [correct_answer, incorrect_answers, isQuestionBoolean]
+  const options = useMemo(() => getOptions(type, correct_answer, incorrect_answers),
+    [correct_answer, incorrect_answers, type]
   );
   const showError = useMemo(() => isFormSubmitted && selectedAnswer?.isCorrect === false, [isFormSubmitted, selectedAnswer]);
 
@@ -43,10 +34,10 @@ function Question( props : QuestionProps ) {
   }
 
   return (
-    <div className="flex rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full">
-      <fieldset id={ questionId } className="flex space-y-4">
-        <legend>{ question }</legend>
-        <ul className={ `flex ${ isQuestionBoolean ? "gap-4" : "flex-col gap-2" }` }>
+    <div className='flex flex-col space-y-2 rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full' >
+      <fieldset id={ questionId } className="flex flex-col space-y-4">
+        <legend className="w-full">{ question }</legend>
+        <ul className={ `w-full flex ${ isQuestionBoolean ? "gap-4" : "flex-col gap-2" }` }>
           {options.map((option, index) => {
             const isIncorrect = !isAnswerCorrect(option, correct_answer) && selectedAnswer?.answer === option;
             return (
@@ -68,7 +59,7 @@ function Question( props : QuestionProps ) {
           })}
         </ul>
       </fieldset>
-      { showError ? <span className="text-red-600">Incorrect</span> : null }
+      <div className="text-red-600 block">{ showError ? 'Incorrect' : '' }</div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import type { QuestionDataProps } from "../types/trivia-api";
+import type { QuestionDataProps } from "../types/triviaApi";
 
 export const questions: QuestionDataProps[] = [
   {

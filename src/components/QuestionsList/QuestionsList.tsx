@@ -1,19 +1,32 @@
-import React, { FormEvent, useMemo } from "react";
+import React, { Dispatch, FormEvent, SetStateAction, useMemo } from "react";
 import Question from "../Question/Question";
 import Button from "../Button/Button";
-import { useQuestions } from "../../context/QuestionsContext";
+import { ApiDataProps } from "../../types/triviaApi";
+import { UseQueryResult } from "@tanstack/react-query";
+import { AnswerProps } from "../../types/answer";
+import { hasExceededRequestLimit } from "../../utils/hasExceededRequestLimit";
 
-function QuestionsList() {
+type QuestionDataProps = {
+  response?:  UseQueryResult<ApiDataProps, Error>,
+  answers: AnswerProps[],
+  setAnswers: Dispatch<SetStateAction<AnswerProps[]>>,
+  isFormSubmitted: boolean,
+  setIsFormSubmitted: Dispatch<SetStateAction<boolean>>
+}
+
+function QuestionsList(props: QuestionDataProps) {
   const {
-    exceedRequestsNr,
-    questions,
-    isLoading,
-    isFetching,
-    error,
+    response,
     isFormSubmitted,
     setIsFormSubmitted,
     answers,
-  } = useQuestions();
+    setAnswers
+  } = props;
+
+  const { isLoading, isFetching, error, data } = response ?? {};
+
+  const questions = data?.results || [];
+  const exceedRequestsNr = hasExceededRequestLimit(data?.response_code);
 
   function onHandleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,6 +52,8 @@ function QuestionsList() {
             key={ question.question }
             questionId={ `question-${ index + 1 }` }
             { ...question }
+            isFormSubmitted={isFormSubmitted}
+            setAnswers={setAnswers}
           />
         ) }
         <Button disabled={ !isFormFilled }>Submit</Button>

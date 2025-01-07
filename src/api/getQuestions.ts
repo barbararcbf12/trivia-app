@@ -1,4 +1,4 @@
-import type { ApiDataProps } from "../types/trivia-api";
+import type { ApiDataProps } from "../types/triviaApi";
 
 const API_URL = 'https://opentdb.com/api.php?amount=10&category=17';
 
