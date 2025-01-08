@@ -15,11 +15,11 @@ export type QuestionDataProps = {
   incorrect_answers: string[];
 }
 
-export type ApiCategoryProps = {
+export type CategoryProps = {
   id: number;
   name: string;
 }
 
 export type ApiCategoriesProps = {
-  trivia_categories: ApiCategoryProps[];
+  trivia_categories: CategoryProps[];
 }
