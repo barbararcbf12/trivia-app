@@ -8,5 +8,6 @@ test("should render <QuestionsList> without props", () => {
       setAnswers={() => {}}
       isFormSubmitted={false}
       setIsFormSubmitted={() => {}}
+      enabled={true}
     />);
 });

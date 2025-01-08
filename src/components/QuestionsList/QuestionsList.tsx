@@ -12,6 +12,7 @@ type QuestionDataProps = {
   setAnswers: Dispatch<SetStateAction<AnswerProps[]>>,
   isFormSubmitted: boolean,
   setIsFormSubmitted: Dispatch<SetStateAction<boolean>>
+  enabled: boolean,
 }
 
 function QuestionsList(props: QuestionDataProps) {
@@ -20,7 +21,8 @@ function QuestionsList(props: QuestionDataProps) {
     isFormSubmitted,
     setIsFormSubmitted,
     answers,
-    setAnswers
+    setAnswers,
+    enabled
   } = props;
 
   const { isLoading, isFetching, error, data } = response ?? {};
@@ -37,7 +39,7 @@ function QuestionsList(props: QuestionDataProps) {
   const isFormFilled = answers.length === questions.length;
   const errorMessage = error?.message || "Something went wrong. Please try again.";
 
-  if (isLoading || isFetching) return <span className="loader"></span>;
+  if (isLoading || isFetching || !enabled) return <span className="loader"></span>;
   if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
   if (error) return <span>{`An error has occurred: ${errorMessage}`}</span>;
 
