@@ -16,6 +16,7 @@ export default function ToggleSelector({ value, onChange, options, label, exclus
     <div className="flex gap-2 items-center">
       <span>{label}</span>
       <ToggleButtonGroup
+        size="small"
         color="primary"
         value={ value }
         exclusive={ exclusive }
