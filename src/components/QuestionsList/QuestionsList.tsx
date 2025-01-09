@@ -35,9 +35,7 @@ function QuestionsList() {
   }, [formValues, questions]);
 
 
-  function onSubmit() {
-    //reset();
-  }
+  function onSubmit() {}
 
   if (loadingQuestions || fetchingQuestions) return <span className="loader"></span>;
   if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
