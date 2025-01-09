@@ -3,13 +3,13 @@ export type ApiDataProps = {
   results: QuestionDataProps[];
 }
 
-type TypeEnum = "multiple" | "boolean";
-type DifficultyEnum = "easy" | "medium" | "hard";
+export type TypeEnum = "multiple" | "boolean";
+export type DifficultyEnum = "easy" | "medium" | "hard";
 
 export type QuestionDataProps = {
   type: TypeEnum;
-  difficulty: DifficultyEnum;
-  category: string;
+  difficulty?: DifficultyEnum;
+  category?: string;
   question: string;
   correct_answer: string;
   incorrect_answers: string[];
