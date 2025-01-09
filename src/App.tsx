@@ -1,23 +1,18 @@
 import React, { useState } from "react";
 import QuestionsList from "./components/QuestionsList/QuestionsList";
 import Button from "./components/Button/Button";
-import { getQuestions } from "./api/getQuestions";
 import { AnswerProps } from "./types/answer";
-import { useQuery } from "@tanstack/react-query";
-import { ApiDataProps } from "./types/triviaApi";
+import { useGetQuestions } from "./hooks/useGetQuestions";
 
 function App() {
   const [ answers, setAnswers ] = useState<AnswerProps[]>([]);
   const [ isFormSubmitted, setIsFormSubmitted ] = useState<boolean>(false);
-  const response = useQuery<ApiDataProps>({
-    queryKey: ['triviaData'],
-    queryFn: getQuestions,
-  });
+  const { refetch } = useGetQuestions();
 
   const handleReloadClick = () => {
     setIsFormSubmitted(false);
     setAnswers([]);
-    response.refetch();
+    refetch();
   }
 
   return (
@@ -33,7 +28,6 @@ function App() {
         <main className="w-full h-full min-h-dvh flex flex-grow justify-center items-center p-3">
           <section className="flex flex-col gap-4 items-center w-full">
             <QuestionsList
-              response={response}
               answers={answers}
               isFormSubmitted={isFormSubmitted}
               setIsFormSubmitted={setIsFormSubmitted}
