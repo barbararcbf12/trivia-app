@@ -7,7 +7,7 @@ import { useGetQuestions } from "../../hooks/useGetQuestions";
 import { QuestionDataProps } from "../../types/triviaApi";
 
 function QuestionsList() {
-  const { handleSubmit, formState } = useFormContext();
+  const { handleSubmit, formState, watch } = useFormContext();
 
   const {
     data: questionsData,
@@ -19,9 +19,25 @@ function QuestionsList() {
   const questions: QuestionDataProps[] = useMemo(() => questionsData?.results, [questionsData]) || [];
   const exceedRequestsNr = hasExceededRequestLimit(questionsData?.response_code);
   const errorMessage = errorQuestions?.message || "Something went wrong. Please try again.";
-  const countCorrectAnswers = useMemo(() => (questions.length - Object.keys(formState.errors).length), [questions, formState.errors]);
 
-  function onSubmit(data: any) {}
+  // Watch all the form values
+  const formValues = watch();
+
+  // Check if all questions have been answered
+  const allQuestionsAnswered = useMemo(() => {
+    return (
+      questions.length > 0 &&
+      questions.every((_, index) => {
+        const questionId = `question-${index + 1}`;
+        return formValues[questionId];
+      })
+    );
+  }, [formValues, questions]);
+
+
+  function onSubmit() {
+    //reset();
+  }
 
   if (loadingQuestions || fetchingQuestions) return <span className="loader"></span>;
   if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
@@ -40,10 +56,9 @@ function QuestionsList() {
             { ...question }
           />
         ) }
-        {/*<Button disabled={ !isFormFilled }>Submit</Button>*/}
-        <Button>Submit</Button>
+        <Button disabled={!allQuestionsAnswered}>Submit</Button>
       </form>
-      <span className="text-red-600 pb-6 mb-6">{ formState.isSubmitted ? `${ countCorrectAnswers } / ${ questions.length } correct` : ''}</span>
+      <span className="text-red-600 pb-6 mb-6">{ formState.isSubmitted ? `${questions.length - Object.keys(formState.errors).length} / ${ questions.length } correct` : ''}</span>
     </>
   );
 }

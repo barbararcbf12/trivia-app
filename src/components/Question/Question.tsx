@@ -5,13 +5,14 @@ import { getOptions } from "../../utils/getOptions";
 import { useFormContext } from "react-hook-form";
 
 type QuestionProps = QuestionDataProps & {
-  questionId: string
+  questionId: string;
 };
 
 function Question( props : QuestionProps ) {
+  const { type, question, correct_answer, incorrect_answers, questionId } = props;
+
   const { register, formState, getValues } = useFormContext();
   const { errors, isSubmitted } = formState;
-  const { type, question, correct_answer, incorrect_answers, questionId } = props;
   const selectedAnswer = getValues()[questionId];
 
   const isQuestionTypeBoolean = useMemo( () => type === "boolean", [type]);
@@ -19,7 +20,6 @@ function Question( props : QuestionProps ) {
   const options = useMemo(() => getOptions(type, correct_answer, incorrect_answers),
     [correct_answer, incorrect_answers, type]
   );
-  console.log('errors?.[questionId]?.message', errors?.[questionId]?.message)
 
   return (
     <div className='flex flex-col space-y-2 rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full' >
@@ -34,8 +34,9 @@ function Question( props : QuestionProps ) {
                   className={ `flex gap-2 items-center ${ highlightOption ? 'text-red-600' : '' }` }>
                   <input
                     {...register(questionId, {
-                      required: "You must select an option",
-                      validate: value => !isAnswerCorrect(value, correct_answer, isQuestionTypeBoolean)
+                      validate: (value) =>
+                        isAnswerCorrect(value, correct_answer, isQuestionTypeBoolean) ||
+                        "Incorrect"
                     })}
                     type="radio"
                     id={ `${ question }-option${ index }` }
@@ -49,7 +50,7 @@ function Question( props : QuestionProps ) {
           })}
         </ul>
       </fieldset>
-      <div className="text-red-600 block">{ errors?.[questionId] ? 'Incorrect' : '' }</div>
+      <div className="text-red-600 block">{ isSubmitted && errors?.[questionId]?.message === 'Incorrect' ? 'Incorrect' : '' }</div>
     </div>
   );
 }
