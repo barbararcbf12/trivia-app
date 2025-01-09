@@ -4,10 +4,5 @@ import { questions } from "../../../api/mockData";
 
 test("should render <Question> without props", () => {
   render(
-    <Question
-      {...questions[0]}
-      questionId='question-1'
-      setAnswers={() => {}}
-      isFormSubmitted={false}
-    />);
+    <Question {...questions[0]} questionId='question-1' />);
 });

@@ -1,50 +1,36 @@
-import React, { Dispatch, FormEvent, SetStateAction, useMemo } from "react";
+import React, { useMemo } from "react";
 import Question from "../Question/Question";
 import Button from "../Button/Button";
-import { ApiDataProps } from "../../types/triviaApi";
-import { UseQueryResult } from "@tanstack/react-query";
-import { AnswerProps } from "../../types/answer";
 import { hasExceededRequestLimit } from "../../utils/hasExceededRequestLimit";
+import { useFormContext } from "react-hook-form";
+import { useGetQuestions } from "../../hooks/useGetQuestions";
+import { QuestionDataProps } from "../../types/triviaApi";
 
-type QuestionDataProps = {
-  response?:  UseQueryResult<ApiDataProps, Error>,
-  answers: AnswerProps[],
-  setAnswers: Dispatch<SetStateAction<AnswerProps[]>>,
-  isFormSubmitted: boolean,
-  setIsFormSubmitted: Dispatch<SetStateAction<boolean>>
-}
+function QuestionsList() {
+  const { handleSubmit, formState } = useFormContext();
 
-function QuestionsList(props: QuestionDataProps) {
   const {
-    response,
-    isFormSubmitted,
-    setIsFormSubmitted,
-    answers,
-    setAnswers
-  } = props;
+    data: questionsData,
+    isLoading: loadingQuestions,
+    isFetching: fetchingQuestions,
+    error: errorQuestions
+  } = useGetQuestions();
 
-  const { isLoading, isFetching, error, data } = response ?? {};
+  const questions: QuestionDataProps[] = useMemo(() => questionsData?.results, [questionsData]) || [];
+  const exceedRequestsNr = hasExceededRequestLimit(questionsData?.response_code);
+  const errorMessage = errorQuestions?.message || "Something went wrong. Please try again.";
+  const countCorrectAnswers = useMemo(() => (questions.length - Object.keys(formState.errors).length), [questions, formState.errors]);
 
-  const questions = data?.results || [];
-  const exceedRequestsNr = hasExceededRequestLimit(data?.response_code);
+  function onSubmit(data: any) {}
 
-  function onHandleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsFormSubmitted(true);
-  }
-
-  const countCorrectAnswers = useMemo(() => answers.filter(answer => answer.isCorrect).length, [answers]);
-  const isFormFilled = answers.length === questions.length;
-  const errorMessage = error?.message || "Something went wrong. Please try again.";
-
-  if (isLoading || isFetching) return <span className="loader"></span>;
+  if (loadingQuestions || fetchingQuestions) return <span className="loader"></span>;
   if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
-  if (error) return <span>{`An error has occurred: ${errorMessage}`}</span>;
+  if (errorQuestions) return <span>{`An error has occurred: ${errorMessage}`}</span>;
 
   return (
     <>
       <form
-        onSubmit={ onHandleSubmit }
+        onSubmit={ handleSubmit(onSubmit) }
         className="w-full flex flex-col space-y-4"
       >
         { questions?.map((question, index) =>
@@ -52,13 +38,12 @@ function QuestionsList(props: QuestionDataProps) {
             key={ question.question }
             questionId={ `question-${ index + 1 }` }
             { ...question }
-            isFormSubmitted={isFormSubmitted}
-            setAnswers={setAnswers}
           />
         ) }
-        <Button disabled={ !isFormFilled }>Submit</Button>
+        {/*<Button disabled={ !isFormFilled }>Submit</Button>*/}
+        <Button>Submit</Button>
       </form>
-      <span className="text-red-600 pb-6 mb-6">{ isFormSubmitted ? `${ countCorrectAnswers } / 10 correct` : ''}</span>
+      <span className="text-red-600 pb-6 mb-6">{ formState.isSubmitted ? `${ countCorrectAnswers } / ${ questions.length } correct` : ''}</span>
     </>
   );
 }
