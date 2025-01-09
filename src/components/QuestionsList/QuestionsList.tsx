@@ -1,13 +1,11 @@
 import React, { Dispatch, FormEvent, SetStateAction, useMemo } from "react";
 import Question from "../Question/Question";
 import Button from "../Button/Button";
-import { ApiDataProps } from "../../types/triviaApi";
-import { UseQueryResult } from "@tanstack/react-query";
 import { AnswerProps } from "../../types/answer";
 import { hasExceededRequestLimit } from "../../utils/hasExceededRequestLimit";
+import { useGetQuestions } from "../../hooks/useGetQuestions";
 
 type QuestionDataProps = {
-  response?:  UseQueryResult<ApiDataProps, Error>,
   answers: AnswerProps[],
   setAnswers: Dispatch<SetStateAction<AnswerProps[]>>,
   isFormSubmitted: boolean,
@@ -16,14 +14,13 @@ type QuestionDataProps = {
 
 function QuestionsList(props: QuestionDataProps) {
   const {
-    response,
     isFormSubmitted,
     setIsFormSubmitted,
     answers,
     setAnswers
   } = props;
 
-  const { isLoading, isFetching, error, data } = response ?? {};
+  const { isLoading, isFetching, error, data } = useGetQuestions();
 
   const questions = data?.results || [];
   const exceedRequestsNr = hasExceededRequestLimit(data?.response_code);
@@ -37,7 +34,7 @@ function QuestionsList(props: QuestionDataProps) {
   const isFormFilled = answers.length === questions.length;
   const errorMessage = error?.message || "Something went wrong. Please try again.";
 
-  if (isLoading || isFetching) return <span className="loader"></span>;
+  if (isLoading || isFetching) return <span className="loader" data-testid="loader"></span>;
   if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
   if (error) return <span>{`An error has occurred: ${errorMessage}`}</span>;
 
