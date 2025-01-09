@@ -3,8 +3,8 @@ export type ApiDataProps = {
   results: QuestionDataProps[];
 }
 
-type TypeEnum = "multiple" | "boolean";
-type DifficultyEnum = "easy" | "medium" | "hard";
+export type TypeEnum = "multiple" | "boolean";
+export type DifficultyEnum = "easy" | "medium" | "hard";
 
 export type QuestionDataProps = {
   type: TypeEnum;
@@ -13,4 +13,13 @@ export type QuestionDataProps = {
   question: string;
   correct_answer: string;
   incorrect_answers: string[];
+}
+
+export type CategoryProps = {
+  id: number;
+  name: string;
+}
+
+export type ApiCategoriesProps = {
+  trivia_categories: CategoryProps[];
 }
