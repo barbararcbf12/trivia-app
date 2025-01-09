@@ -5,6 +5,7 @@ import { hasExceededRequestLimit } from "../../utils/hasExceededRequestLimit";
 import { useFormContext } from "react-hook-form";
 import { useGetQuestions } from "../../hooks/useGetQuestions";
 import { QuestionDataProps } from "../../types/triviaApi";
+import { Skeleton } from "@mui/material";
 
 function QuestionsList() {
   const { handleSubmit, formState, watch } = useFormContext();
@@ -16,7 +17,7 @@ function QuestionsList() {
     error: errorQuestions
   } = useGetQuestions();
 
-  const questions: QuestionDataProps[] = useMemo(() => questionsData?.results, [questionsData]) || [];
+  const questions: QuestionDataProps[] = useMemo(() => questionsData?.results || [], [questionsData]);
   const exceedRequestsNr = hasExceededRequestLimit(questionsData?.response_code);
   const errorMessage = errorQuestions?.message || "Something went wrong. Please try again.";
 
@@ -37,9 +38,11 @@ function QuestionsList() {
 
   function onSubmit() {}
 
-  if (loadingQuestions || fetchingQuestions) return <span className="loader"></span>;
+  const loading = loadingQuestions || fetchingQuestions;
+
   if (exceedRequestsNr) return <span>Too many requests have occurred. Wait 5 seconds and try again.</span>;
   if (errorQuestions) return <span>{`An error has occurred: ${errorMessage}`}</span>;
+  if (!loading && questions.length === 0) return <span>There are no questions for the selected options you made</span>;
 
   return (
     <>
@@ -47,7 +50,9 @@ function QuestionsList() {
         onSubmit={ handleSubmit(onSubmit) }
         className="w-full flex flex-col space-y-4"
       >
-        { questions?.map((question, index) =>
+        {loading ? [ ...Array(5) ].map((_, i) => (
+          <QuestionSkeleton key={`question-skeleton-${i}`}/>
+        )) : questions?.map((question, index) =>
           <Question
             key={ question.question }
             questionId={ `question-${ index + 1 }` }
@@ -62,3 +67,23 @@ function QuestionsList() {
 }
 
 export default QuestionsList;
+
+const QuestionSkeleton = () => {
+  return (
+    <div className='flex flex-col space-y-2 rounded-mobile md:rounded-desktop bg-grey-100 p-6 shadow-elevation-01 w-full'>
+      <div className="flex flex-col space-y-4">
+        <Skeleton sx={ { height: 20, width: "80%" } } animation="wave" variant="rectangular"/>
+        <ul className="w-full flex flex-col gap-2.5">
+          { [ ...Array(5) ].map((_, i) => (
+            <li className="flex" key={ `option-skeleton-${ i }` }>
+              <span className="flex gap-2 items-center w-full">
+                <Skeleton sx={ {height: 20, width: 20} } animation="wave" variant="circular"/>
+                <Skeleton sx={ {height: 20, width: `${20 - i}%`} } animation="wave" variant="rectangular"/>
+              </span>
+            </li>
+          )) }
+        </ul>
+      </div>
+    </div>
+  );
+}
