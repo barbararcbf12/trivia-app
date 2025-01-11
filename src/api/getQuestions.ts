@@ -8,7 +8,7 @@ export const getQuestions: (query: QueryProps) => Promise<ApiDataProps> = async 
   if (query) {
     (Object.keys(query) as (keyof QueryProps)[]).forEach((queryKey) => {
       const value = query[queryKey];
-      if (value !== null && value !== undefined) {
+      if (value) {
         searchParams.set(queryKey, value.toString());
       }
     });

@@ -1,13 +1,10 @@
 import QuestionsList from "../QuestionsList";
 import { render } from "@testing-library/react";
+import { INITIAL_QUERY_VALUE } from "../../../constants/query";
 
 test("should render <QuestionsList> without props", () => {
   render(
     <QuestionsList
-      answers={[]}
-      setAnswers={() => {}}
-      isFormSubmitted={false}
-      setIsFormSubmitted={() => {}}
-      enabled={true}
+      query={INITIAL_QUERY_VALUE}
     />);
 });
