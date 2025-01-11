@@ -1,13 +1,11 @@
+import React, { Dispatch, FormEvent } from "react";
+import type { SelectChangeEvent } from "@mui/material";
+import type { QueryProps } from "../../types/queryOptions";
 import Button from "../../components/Button/Button";
 import ToggleSelector from "../../components/ToggleSelector/ToggleSelector";
-import { AMOUNT_OPTIONS, DIFFICULTY_OPTIONS, INITIAL_QUERY_VALUE, TYPE_OPTIONS } from "../../constants/query";
 import Select from "../../components/Select/Select";
-import React, { Dispatch, FormEvent } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { ApiCategoriesProps } from "../../types/triviaApi";
-import { getCategories } from "../../api/getCategories";
-import type { SelectChangeEvent } from "@mui/material";
-import { QueryProps } from "../../types/queryOptions";
+import { useGetCategories } from "../../hooks/useGetCategories";
+import { AMOUNT_OPTIONS, DIFFICULTY_OPTIONS, INITIAL_QUERY_VALUE, TYPE_OPTIONS } from "../../constants/query";
 
 type CustomiseTriviaFormProps = {
   setQuery: Dispatch<React.SetStateAction<QueryProps>>;
@@ -19,10 +17,7 @@ type CustomiseTriviaFormProps = {
 export default function CustomiseTriviaForm( props: CustomiseTriviaFormProps ) {
   const { setQuery, tempQuery, setTempQuery, setOpenCustomizationOptions } = props;
 
-  const { data: categoriesData } = useQuery<ApiCategoriesProps>({
-    queryKey: ['questionCategories'],
-    queryFn: getCategories,
-  });
+  const { data: categoriesData } = useGetCategories();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement> | SelectChangeEvent<string>, key: string) => {
     setTempQuery({ ...tempQuery, [key]: e.target.value });
