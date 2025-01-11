@@ -7,7 +7,5 @@ test("should render <Question> without props", () => {
     <Question
       {...questions[0]}
       questionId='question-1'
-      setAnswers={() => {}}
-      isFormSubmitted={false}
     />);
 });
