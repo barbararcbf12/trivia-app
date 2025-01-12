@@ -1,4 +1,5 @@
 {
+  "homepage": "https://barbararcbf12.github.io/trivia-app/",
   "name": "react-boilerplate-app",
   "version": "0.1.0",
   "private": true,
@@ -9,7 +10,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint . --ext js,cjs,mjs,ts,tsx",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "deploy": "gh-pages -d build"
   },
   "lint-staged": {
     "src/**/*.{js,tsx,ts}": [
@@ -68,6 +70,7 @@
     "@types/react-dom": "^18.3.1",
     "dotenv": "^16.4.5",
     "eslint-plugin-react": "^7.37.1",
+    "gh-pages": "^6.3.0",
     "globals": "^15.11.0",
     "husky": "^8.0.0",
     "prettier": "3.3.3",
